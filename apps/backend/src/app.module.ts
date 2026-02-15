@@ -51,8 +51,20 @@ import { awsConfig } from './config/aws.config';
             format: winston.format.combine(
               winston.format.colorize(),
               winston.format.printf(
-                ({ timestamp, level, message, context, trace }) =>
-                  `${timestamp} [${context ?? 'App'}] ${level}: ${message}${trace ? `\n${trace}` : ''}`,
+                ({
+                  timestamp,
+                  level,
+                  message,
+                  context,
+                  trace,
+                }: {
+                  timestamp?: string;
+                  level?: string;
+                  message?: string;
+                  context?: string;
+                  trace?: string;
+                }) =>
+                  `${timestamp ?? ''} [${context ?? 'App'}] ${level ?? ''}: ${message ?? ''}${trace ? `\n${trace}` : ''}`,
               ),
             ),
           }),
