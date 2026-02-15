@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
   });
 
   // Logger
+  const logger = new Logger('Bootstrap');
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   // Configuration
@@ -106,7 +107,7 @@ async function bootstrap(): Promise<void> {
       },
     });
 
-    console.log(`📚 Swagger UI: http://localhost:${port}${apiPrefix}/docs`);
+    logger.log(`📚 Swagger UI: http://localhost:${port}${apiPrefix}/docs`);
   }
 
   // Graceful Shutdown
@@ -114,8 +115,8 @@ async function bootstrap(): Promise<void> {
 
   await app.listen(port);
 
-  console.log(`🚀 CDCP API Server running on http://localhost:${port}${apiPrefix}`);
-  console.log(`🌍 Environment: ${process.env['NODE_ENV'] ?? 'development'}`);
+  logger.log(`🚀 CDCP API Server running on http://localhost:${port}${apiPrefix}`);
+  logger.log(`🌍 Environment: ${process.env['NODE_ENV'] ?? 'development'}`);
 }
 
 void bootstrap();

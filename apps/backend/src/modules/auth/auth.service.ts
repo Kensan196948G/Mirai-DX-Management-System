@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../database/prisma.service';
 
 import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';
-import type { User } from '@prisma/client';
+import type { User, UserRole as PrismaUserRole } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -23,9 +23,12 @@ export class AuthService {
    * @param email - User email
    * @returns User record with roles
    */
-  async getOrCreateUser(auth0UserId: string, email: string): Promise<User> {
+  async getOrCreateUser(
+    auth0UserId: string,
+    email: string,
+  ): Promise<User & { roles: Array<{ role: PrismaUserRole['role'] }> }> {
     // Try to find existing user
-    let user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { auth0UserId },
       include: {
         roles: true,
@@ -60,8 +63,8 @@ export class AuthService {
     return {
       ...authenticatedUser,
       userId: user.id,
-      organizationId: user.organizationId,
-      roles: user.roles.map((role) => role.role),
+      organizationId: user.organizationId ?? undefined,
+      roles: user.roles.map((role) => role.role as string),
     };
   }
 

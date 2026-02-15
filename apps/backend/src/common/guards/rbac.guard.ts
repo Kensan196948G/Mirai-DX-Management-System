@@ -44,7 +44,7 @@ export class RbacGuard implements CanActivate {
     // Check roles
     if (requiredRoles && requiredRoles.length > 0) {
       const userRoles = user.roles ?? [];
-      const hasRole = requiredRoles.some((role) => userRoles.includes(role));
+      const hasRole = requiredRoles.some((role) => userRoles.includes(String(role)));
 
       if (!hasRole) {
         throw new ForbiddenException(
