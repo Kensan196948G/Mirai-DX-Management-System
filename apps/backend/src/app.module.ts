@@ -63,8 +63,14 @@ import { awsConfig } from './config/aws.config';
                   message?: string;
                   context?: string;
                   trace?: string;
-                }) =>
-                  `${timestamp ?? ''} [${context ?? 'App'}] ${level ?? ''}: ${message ?? ''}${trace ? `\n${trace}` : ''}`,
+                }) => {
+                  const ts = timestamp ?? '';
+                  const ctx = context ?? 'App';
+                  const lvl = level ?? '';
+                  const msg = message ?? '';
+                  const traceStr = trace ? `\n${trace}` : '';
+                  return `${ts} [${ctx}] ${lvl}: ${msg}${traceStr}`;
+                },
               ),
             ),
           }),
