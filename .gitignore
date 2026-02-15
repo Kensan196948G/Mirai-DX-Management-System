@@ -57,3 +57,7 @@ prisma/migrations/
 # OS
 Thumbs.db
 desktop.ini
+
+# Claude Code
+.claude/settings.local.json
+.claude/projects/

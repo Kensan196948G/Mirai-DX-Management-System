@@ -1,0 +1,49 @@
+name: Mark stale issues and PRs
+
+on:
+  schedule:
+    # 毎週月曜日の午前9時（JST）に実行
+    - cron: '0 0 * * 1'
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mark stale issues and PRs
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # Issue設定
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          stale-issue-label: 'stale'
+          exempt-issue-labels: 'pinned,security,bug'
+          stale-issue-message: |
+            このIssueは60日間活動がないため、自動的に「stale」とマークされました。
+            14日以内に更新がない場合、自動的にクローズされます。
+            まだ対応が必要な場合は、コメントを追加してください。
+          close-issue-message: |
+            このIssueは長期間活動がないため、自動的にクローズされました。
+            再度対応が必要な場合は、Issueを再オープンしてください。
+
+          # PR設定
+          days-before-pr-stale: 30
+          days-before-pr-close: 7
+          stale-pr-label: 'stale'
+          exempt-pr-labels: 'pinned,security'
+          stale-pr-message: |
+            このPRは30日間活動がないため、自動的に「stale」とマークされました。
+            7日以内に更新がない場合、自動的にクローズされます。
+            まだマージが必要な場合は、コメントを追加してください。
+          close-pr-message: |
+            このPRは長期間活動がないため、自動的にクローズされました。
+            再度マージが必要な場合は、PRを再作成してください。
+
+          # 全体設定
+          operations-per-run: 100
+          remove-stale-when-updated: true

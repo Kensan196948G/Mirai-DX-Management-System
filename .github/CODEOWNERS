@@ -1,0 +1,31 @@
+# Code Owners
+# 各ディレクトリ・ファイルの責任者を定義
+# PRレビューの自動アサイン先として使用
+
+# デフォルトオーナー
+* @Kensan196948G
+
+# バックエンド
+/apps/backend/ @Kensan196948G
+/apps/backend/src/modules/auth/ @Kensan196948G
+/apps/backend/src/modules/photos/ @Kensan196948G
+/apps/backend/prisma/ @Kensan196948G
+
+# フロントエンド
+/apps/frontend/ @Kensan196948G
+/apps/frontend/src/components/ @Kensan196948G
+/apps/frontend/src/pages/ @Kensan196948G
+
+# インフラ・CI/CD
+/infrastructure/ @Kensan196948G
+/.github/ @Kensan196948G
+/docker-compose.yml @Kensan196948G
+
+# ドキュメント
+/docs/ @Kensan196948G
+
+# 設定ファイル
+/.eslintrc.json @Kensan196948G
+/.prettierrc.json @Kensan196948G
+/tsconfig.json @Kensan196948G
+/package.json @Kensan196948G
