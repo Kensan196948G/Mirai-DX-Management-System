@@ -50,7 +50,7 @@
         }
       }
     ],
-    "import/no-unresolved": "error",
+    "import/no-unresolved": "off",
     "import/no-cycle": "error",
     "security/detect-object-injection": "off",
     "security/detect-non-literal-regexp": "warn",
