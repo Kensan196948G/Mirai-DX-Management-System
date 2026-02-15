@@ -119,7 +119,7 @@ export class UsersService {
     const user = await this.findOne(id);
 
     // Update user
-    const updated = await this.prisma.user.update({
+    await this.prisma.user.update({
       where: { id },
       data: {
         displayName: dto.displayName ?? user.displayName,

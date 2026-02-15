@@ -213,7 +213,8 @@ export class ProjectsService {
   async getStatistics(
     projectId: string,
   ): Promise<{ totalPhotos: number; totalFolders: number; storageBytes: number }> {
-    const project = await this.findOne(projectId);
+    // Verify project exists (throws NotFoundException if not found)
+    await this.findOne(projectId);
 
     const stats = await this.prisma.photo.aggregate({
       where: { projectId },

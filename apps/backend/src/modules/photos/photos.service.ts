@@ -154,7 +154,8 @@ export class PhotosService {
 
       return photo;
     } catch (error) {
-      this.logger.error(`Failed to upload photo: ${error}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to upload photo: ${errorMessage}`);
       throw new BadRequestException('Failed to upload photo');
     }
   }
@@ -325,7 +326,8 @@ export class PhotosService {
         );
       }
     } catch (error) {
-      this.logger.error(`Failed to delete from S3: ${error}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to delete from S3: ${errorMessage}`);
     }
 
     // Delete from database
