@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+coverage
+.next
+.env
+.env.*
+*.log
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+infrastructure/terraform/.terraform
+infrastructure/terraform/*.tfstate
+infrastructure/terraform/*.tfstate.backup

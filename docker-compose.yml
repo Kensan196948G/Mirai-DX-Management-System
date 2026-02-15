@@ -1,0 +1,93 @@
+version: '3.9'
+
+services:
+  # PostgreSQL 15 with PostGIS
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: cdcp-postgres
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: cdcp_dev
+      POSTGRES_PASSWORD: cdcp_dev_password
+      POSTGRES_DB: cdcp_development
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --locale=ja_JP.UTF-8'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./apps/backend/prisma/seeds:/docker-entrypoint-initdb.d
+    networks:
+      - cdcp-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U cdcp_dev -d cdcp_development']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL Test DB
+  postgres-test:
+    image: postgis/postgis:15-3.3
+    container_name: cdcp-postgres-test
+    restart: unless-stopped
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: cdcp_test
+      POSTGRES_PASSWORD: cdcp_test_password
+      POSTGRES_DB: cdcp_test
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --locale=ja_JP.UTF-8'
+    networks:
+      - cdcp-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U cdcp_test -d cdcp_test']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 7
+  redis:
+    image: redis:7-alpine
+    container_name: cdcp-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass cdcp_redis_password --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - cdcp-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Localstack (AWS S3 emulation for local development)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: cdcp-localstack
+    restart: unless-stopped
+    ports:
+      - '4566:4566'
+    environment:
+      SERVICES: s3
+      DEFAULT_REGION: ap-northeast-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      DATA_DIR: /tmp/localstack/data
+    volumes:
+      - localstack_data:/tmp/localstack
+    networks:
+      - cdcp-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  localstack_data:
+    driver: local
+
+networks:
+  cdcp-network:
+    driver: bridge
