@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WinstonModule } from 'nest-winston';
+import { APP_GUARD } from '@nestjs/core';
 import * as winston from 'winston';
 
 import { DatabaseModule } from './database/database.module';
@@ -14,6 +15,9 @@ import { PhotosModule } from './modules/photos/photos.module';
 import { SchedulesModule } from './modules/schedules/schedules.module';
 import { CostsModule } from './modules/costs/costs.module';
 import { HealthModule } from './modules/health/health.module';
+
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { RbacGuard } from './common/guards/rbac.guard';
 
 import { appConfig } from './config/app.config';
 import { databaseConfig } from './config/database.config';
@@ -94,6 +98,17 @@ import { awsConfig } from './config/aws.config';
     SchedulesModule,
     CostsModule,
     HealthModule,
+  ],
+  providers: [
+    // Global Guards (apply to all routes by default)
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RbacGuard,
+    },
   ],
 })
 export class AppModule {}
