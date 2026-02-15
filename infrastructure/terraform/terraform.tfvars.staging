@@ -1,0 +1,43 @@
+# CDCP Infrastructure - Staging Environment Variables
+
+environment = "staging"
+aws_region  = "ap-northeast-1"
+project_name = "cdcp"
+cost_center  = "staging"
+
+# VPC
+vpc_cidr           = "10.0.0.0/16"
+enable_nat_gateway = true
+
+# ECS
+ecs_task_cpu        = 512   # 0.5 vCPU
+ecs_task_memory     = 1024  # 1 GB
+ecs_desired_count   = 2
+ecs_auto_scaling_min = 2
+ecs_auto_scaling_max = 5
+
+# RDS
+rds_instance_class          = "db.t3.medium"
+rds_allocated_storage       = 50
+rds_max_allocated_storage   = 200
+rds_backup_retention_period = 7
+rds_multi_az                = false  # ステージングはシングルAZ
+rds_deletion_protection     = false
+
+# ElastiCache
+elasticache_node_type       = "cache.t3.micro"
+elasticache_num_cache_nodes = 1  # ステージングは1ノード
+
+# S3
+s3_lifecycle_glacier_days    = 0     # ステージングはGlacier移行なし
+s3_lifecycle_expiration_days = 90    # 90日で削除
+
+# Security
+allowed_cidr_blocks = ["0.0.0.0/0"]  # 開発環境のため全開放（本番は要制限）
+
+# Monitoring
+enable_datadog  = true
+datadog_api_key = ""  # 環境変数から取得: TF_VAR_datadog_api_key
+
+# Database Password (環境変数から取得: TF_VAR_database_master_password)
+# database_master_password = ""

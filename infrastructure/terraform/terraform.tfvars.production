@@ -1,0 +1,47 @@
+# CDCP Infrastructure - Production Environment Variables
+
+environment = "production"
+aws_region  = "ap-northeast-1"
+project_name = "cdcp"
+cost_center  = "production"
+
+# VPC
+vpc_cidr           = "10.0.0.0/16"
+enable_nat_gateway = true
+
+# ECS
+ecs_task_cpu        = 1024  # 1 vCPU
+ecs_task_memory     = 2048  # 2 GB
+ecs_desired_count   = 3
+ecs_auto_scaling_min = 3
+ecs_auto_scaling_max = 10
+
+# RDS
+rds_instance_class          = "db.r6g.large"  # メモリ最適化
+rds_allocated_storage       = 100
+rds_max_allocated_storage   = 500
+rds_backup_retention_period = 30  # 30日保持
+rds_multi_az                = true
+rds_deletion_protection     = true
+
+# ElastiCache
+elasticache_node_type       = "cache.r6g.large"
+elasticache_num_cache_nodes = 2  # Multi-AZ
+
+# S3
+s3_lifecycle_glacier_days    = 90    # 90日後にGlacier移行
+s3_lifecycle_expiration_days = 3650  # 10年保持（監査要件）
+
+# Security
+allowed_cidr_blocks = [
+  "203.0.113.0/24"  # 本社オフィスIP（例）
+  # 必要に応じて建設現場のIP範囲を追加
+]
+
+# Monitoring
+enable_datadog  = true
+datadog_api_key = ""  # 環境変数から取得: TF_VAR_datadog_api_key
+
+# Database Password (環境変数から取得: TF_VAR_database_master_password)
+# 本番環境は必ず強固なパスワードを設定すること（32文字以上推奨）
+# database_master_password = ""
