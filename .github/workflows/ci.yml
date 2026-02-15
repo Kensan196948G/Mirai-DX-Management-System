@@ -133,7 +133,7 @@ jobs:
         run: npm run build:backend
 
       - name: Upload backend build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: backend-build
           path: apps/backend/dist
@@ -163,7 +163,7 @@ jobs:
         run: npm run build:frontend
 
       - name: Upload frontend build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: frontend-build
           path: apps/frontend/dist
