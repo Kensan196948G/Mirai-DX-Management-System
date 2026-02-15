@@ -178,7 +178,9 @@ jobs:
     steps:
       - name: Check CI status
         run: |
-          if [ "${{ needs.build-backend.result }}" != "success" ] || [ "${{ needs.build-frontend.result }}" != "success" ]; then
+          if [ "${{ needs.lint-and-format.result }}" != "success" ] || \
+             [ "${{ needs.test-backend.result }}" != "success" ] || \
+             [ "${{ needs.test-frontend.result }}" != "success" ]; then
             echo "CI failed"
             exit 1
           fi
