@@ -55,10 +55,7 @@ export class AuthService {
    * @returns Enriched user with roles and organization
    */
   async enrichUser(authenticatedUser: AuthenticatedUser): Promise<AuthenticatedUser> {
-    const user = await this.getOrCreateUser(
-      authenticatedUser.auth0UserId,
-      authenticatedUser.email,
-    );
+    const user = await this.getOrCreateUser(authenticatedUser.auth0UserId, authenticatedUser.email);
 
     return {
       ...authenticatedUser,
