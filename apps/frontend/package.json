@@ -24,7 +24,7 @@
     "date-fns": "^3.0.6",
     "leaflet": "^1.9.4",
     "react-leaflet": "^4.2.1",
-    "exifreader": "^4.20.0",
+    "exifreader": "^4.36.2",
     "heic2any": "^0.0.4",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.7",
