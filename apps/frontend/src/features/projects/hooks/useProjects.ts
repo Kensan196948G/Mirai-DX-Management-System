@@ -26,11 +26,14 @@ export const useProject = (id: string) => {
   });
 };
 
+type ProjectInput = Pick<Project, 'name'> &
+  Partial<Pick<Project, 'description' | 'clientName' | 'clientType' | 'constructionType' | 'startDate' | 'endDate' | 'location'>>;
+
 export const useCreateProject = () => {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { name: string; description?: string }) => {
+    mutationFn: async (data: ProjectInput) => {
       const res = await apiClient.post<ApiResponse<Project>>('/projects', data);
       return res.data.data;
     },
@@ -44,7 +47,7 @@ export const useUpdateProject = (id: string) => {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: Partial<Pick<Project, 'name' | 'description' | 'status'>>) => {
+    mutationFn: async (data: Partial<Pick<Project, 'name' | 'description' | 'status' | 'clientName' | 'clientType' | 'constructionType' | 'startDate' | 'endDate' | 'location'>>) => {
       const res = await apiClient.patch<ApiResponse<Project>>(`/projects/${id}`, data);
       return res.data.data;
     },

@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
-import { useCreateProject, useProjects } from '../hooks/useProjects';
+import ProjectForm from '../components/ProjectForm';
+import { useProjects } from '../hooks/useProjects';
 
 const statusLabels: Record<string, string> = {
   active: '進行中',
@@ -20,25 +21,7 @@ const statusColors: Record<string, string> = {
 
 const ProjectsPage: React.FC = () => {
   const { data: projects = [], isLoading, error } = useProjects();
-  const { mutate: createProject, isPending } = useCreateProject();
   const [showForm, setShowForm] = useState(false);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-    createProject(
-      { name: name.trim(), description: description.trim() || undefined },
-      {
-        onSuccess: () => {
-          setShowForm(false);
-          setName('');
-          setDescription('');
-        },
-      },
-    );
-  };
 
   if (isLoading) {
     return (
@@ -63,55 +46,25 @@ const ProjectsPage: React.FC = () => {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          新規作成
+          新規案件作成
         </button>
       </div>
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <h2 className="text-lg font-semibold mb-4">プロジェクトを作成</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  プロジェクト名 <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                  placeholder="プロジェクト名を入力"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
-                  rows={3}
-                  placeholder="任意"
-                />
-              </div>
-              <div className="flex gap-3 justify-end">
-                <button
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  キャンセル
-                </button>
-                <button
-                  type="submit"
-                  disabled={isPending || !name.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {isPending ? '作成中...' : '作成'}
-                </button>
-              </div>
-            </form>
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">新規案件作成</h2>
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <ProjectForm onSuccess={() => setShowForm(false)} onCancel={() => setShowForm(false)} />
           </div>
         </div>
       )}

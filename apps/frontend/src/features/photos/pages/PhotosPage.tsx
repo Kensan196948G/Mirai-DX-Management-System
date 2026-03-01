@@ -5,12 +5,16 @@ import { useParams } from 'react-router-dom';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 import PhotoList from '../components/PhotoList';
+import PhotoMap from '../components/PhotoMap';
 import PhotoUpload from '../components/PhotoUpload';
 import { usePhotos, useUploadPhoto } from '../hooks/usePhotos';
+
+type Tab = 'list' | 'map';
 
 const PhotosPage: React.FC = () => {
   const { id: projectId = '' } = useParams<{ id: string }>();
   const [showUpload, setShowUpload] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('list');
 
   const { data: photos = [], isLoading, error } = usePhotos(projectId);
   const { mutate: upload, isPending: isUploading } = useUploadPhoto(projectId);
@@ -58,6 +62,22 @@ const PhotosPage: React.FC = () => {
         </button>
       </div>
 
+      <div className="flex gap-1 mb-4 border-b border-gray-200">
+        {(['list', 'map'] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {tab === 'list' ? '一覧' : '地図'}
+          </button>
+        ))}
+      </div>
+
       {showUpload && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-lg">
@@ -77,7 +97,7 @@ const PhotosPage: React.FC = () => {
         </div>
       )}
 
-      <PhotoList photos={photos} />
+      {activeTab === 'list' ? <PhotoList photos={photos} /> : <PhotoMap photos={photos} />}
     </div>
   );
 };

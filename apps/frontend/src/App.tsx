@@ -9,6 +9,7 @@ import Layout from '@/components/layout/Layout';
 import ProjectDetailPage from '@/features/projects/pages/ProjectDetailPage';
 import ProjectsPage from '@/features/projects/pages/ProjectsPage';
 import PhotosPage from '@/features/photos/pages/PhotosPage';
+import UsersPage from '@/features/users/pages/UsersPage';
 import { setTokenGetter } from '@/lib/api';
 
 const TokenSetup: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -40,6 +41,7 @@ const App: React.FC = () => {
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
             <Route path="/projects/:id/photos" element={<PhotosPage />} />
+            <Route path="/users" element={<UsersPage />} />
           </Route>
         </Routes>
       </TokenSetup>

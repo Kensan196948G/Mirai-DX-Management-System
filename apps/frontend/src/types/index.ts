@@ -22,6 +22,8 @@ export interface User {
   role: 'admin' | 'manager' | 'member';
   organizationId: string;
   organization?: Organization;
+  isActive: boolean;
+  roles?: Array<{ role: { name: string } }>;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,6 +32,12 @@ export interface Project {
   id: string;
   name: string;
   description?: string;
+  clientName?: string;
+  clientType?: 'public' | 'private';
+  constructionType?: string;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
   status: 'active' | 'completed' | 'archived';
   organizationId: string;
   organization?: Organization;

@@ -23,6 +23,7 @@ import { appConfig } from './config/app.config';
 import { databaseConfig } from './config/database.config';
 import { authConfig } from './config/auth.config';
 import { awsConfig } from './config/aws.config';
+import { validateEnv } from './config/env.validation';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { awsConfig } from './config/aws.config';
       isGlobal: true,
       load: [appConfig, databaseConfig, authConfig, awsConfig],
       envFilePath: ['.env.development', '.env'],
+      validate: validateEnv,
     }),
 
     // Winston Logger
