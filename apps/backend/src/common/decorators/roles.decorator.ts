@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import type { UserRole } from '@prisma/client';
+import type { RoleName } from '@prisma/client';
 
 export const ROLES_KEY = 'roles';
 
@@ -9,7 +9,7 @@ export const ROLES_KEY = 'roles';
  * Specifies required roles for accessing a route.
  * Used with RbacGuard.
  *
- * @param roles - Required roles (UserRole enum)
+ * @param roles - Required roles (RoleName enum)
  *
  * @example
  * ```typescript
@@ -20,5 +20,5 @@ export const ROLES_KEY = 'roles';
  * }
  * ```
  */
-export const Roles = (...roles: UserRole[]): ReturnType<typeof SetMetadata> =>
+export const Roles = (...roles: RoleName[]): ReturnType<typeof SetMetadata> =>
   SetMetadata(ROLES_KEY, roles);

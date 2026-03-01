@@ -12,7 +12,13 @@
       "Bash(git add:*)",
       "Bash(git config:*)",
       "Bash(git commit:*)",
-      "Bash(bash -n:*)"
+      "Bash(bash -n:*)",
+      "Bash(git -C \"D:\\\\Mirai-DX-Management-System\" status)",
+      "Bash(git -C \"D:\\\\Mirai-DX-Management-System\" add apps/backend/src/app.module.ts apps/backend/src/common apps/backend/src/config apps/backend/src/modules)",
+      "Bash(git -C \"D:\\\\Mirai-DX-Management-System\" log --oneline -5)",
+      "Bash(git -C \"D:\\\\Mirai-DX-Management-System\" commit -m \"$\\(cat <<''EOF''\nfeat: 認証基盤実装完了（Auth0 + JWT + RBAC）\n\nAuth0統合、JWT認証、ロールベースアクセス制御（RBAC）を実装しました。\n\n## 実装内容\n\n### Auth0 統合\n- JwtStrategy with JWKS（RS256公開鍵検証）\n- Auth0ユーザーIDとアプリケーションユーザーの紐付け\n- OAuth 2.0 + OpenID Connect対応\n\n### JWT認証\n- JwtAuthGuard（グローバル適用、@Public\\(\\)で除外可能）\n- トークン検証とユーザー情報抽出\n- リフレッシュトークン設定（7日間）\n\n### RBAC（ロールベースアクセス制御）\n- RbacGuard（ロール・パーミッションチェック）\n- 5つのロール：system_admin, branch_admin, supervisor, worker, viewer\n- デコレーター：@Roles\\(\\), @Permissions\\(\\), @CurrentUser\\(\\), @Public\\(\\)\n\n### セキュリティ機能\n- グローバルガード（全エンドポイント保護）\n- パーミッションマトリクス（ロール別権限定義）\n- 監査ログ機能（AuthService.logActivity）\n- ユーザー活性化/非活性化（論理削除）\n\n### API実装\n- AuthController：/auth/profile, /auth/verify, /auth/logout\n- UsersController：CRUD + RBAC保護（admin専用エンドポイント）\n- HealthController：/health, /health/ready, /health/live（公開）\n\n### モジュール構成\n- AuthModule（JWT Strategy、AuthService）\n- UsersModule（ユーザー管理、RBAC保護）\n- HealthModule（Terminus ヘルスチェック）\n- 共通Guards・Decorators（common/）\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"D:\\\\Mirai-DX-Management-System\" add apps/backend/src/modules)",
+      "Bash(git -C \"D:\\\\Mirai-DX-Management-System\" commit -m \"$\\(cat <<''EOF''\nfeat: 写真管理API実装完了（S3統合、GPS、検索機能）\n\n組織管理、プロジェクト管理、写真管理のフルスタックAPI実装を完了しました。\n\n## 実装内容\n\n### OrganizationsModule（組織管理）\n- 階層構造対応（本社/支店/営業所）\n- CRUD API with RBAC保護（system_admin専用）\n- 組織ツリー取得（findHierarchy）\n- 活性化/非活性化（論理削除）\n\n### ProjectsModule（案件管理）\n- PostGIS統合（GPS座標検索）\n- 案件ステータス管理（planning, in_progress, completed, on_hold, cancelled）\n- 半径検索（ST_DWithin）\n- 案件統計（写真数、フォルダ数、ストレージ使用量）\n- RBAC保護（supervisor以上）\n\n### PhotosModule（写真管理）\n- AWS S3統合（Localstack対応）\n- マルチパートファイルアップロード（最大50MB）\n- Sharp画像処理（サムネイル自動生成 200x200）\n- PostGIS GPS検索（半径検索）\n- EXIF データ保存（JSON）\n- タグ機能（多対多リレーション）\n- 高度な検索機能（日時、位置、タグ、フリーワード）\n- Presigned URL生成（セキュアなダウンロード、1時間有効）\n- S3自動削除（写真削除時）\n\n### セキュリティ機能\n- 全エンドポイントRBAC保護\n- ファイルサイズ制限（50MB）\n- S3アクセス制御（Presigned URL）\n- ユーザー権限検証\n\n### PostGIS活用\n- Geography型（POINT, SRID 4326）\n- ST_MakePoint、ST_SetSRID\n- ST_DWithin距離検索\n- メートル単位での半径検索\n\n### API設計\n- RESTful設計（/api/v1/organizations, /projects, /photos）\n- Swagger完全ドキュメント化\n- バリデーション（class-validator）\n- エラーハンドリング（Not Found, Conflict, Forbidden）\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

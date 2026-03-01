@@ -42,7 +42,7 @@ export class UsersController {
    * Create a new user (admin only)
    */
   @Post()
-  @Roles('system_admin', 'branch_admin')
+  @Roles('SYSTEM_ADMIN', 'BRANCH_ADMIN')
   @Permissions('write:users')
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
@@ -57,7 +57,7 @@ export class UsersController {
    * Get all users (admin only)
    */
   @Get()
-  @Roles('system_admin', 'branch_admin')
+  @Roles('SYSTEM_ADMIN', 'BRANCH_ADMIN')
   @Permissions('read:users')
   @ApiOperation({ summary: 'Get all users' })
   @ApiQuery({
@@ -102,7 +102,7 @@ export class UsersController {
    * Update user
    */
   @Patch(':id')
-  @Roles('system_admin', 'branch_admin')
+  @Roles('SYSTEM_ADMIN', 'BRANCH_ADMIN')
   @Permissions('write:users')
   @ApiOperation({ summary: 'Update user' })
   @ApiParam({ name: 'id', description: 'User ID' })
@@ -117,7 +117,7 @@ export class UsersController {
    * Deactivate user (soft delete)
    */
   @Delete(':id')
-  @Roles('system_admin', 'branch_admin')
+  @Roles('SYSTEM_ADMIN', 'BRANCH_ADMIN')
   @Permissions('write:users')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Deactivate user (soft delete)' })
@@ -133,7 +133,7 @@ export class UsersController {
    * Permanently delete user (admin only)
    */
   @Delete(':id/permanent')
-  @Roles('system_admin')
+  @Roles('SYSTEM_ADMIN')
   @Permissions('delete:users')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Permanently delete user' })

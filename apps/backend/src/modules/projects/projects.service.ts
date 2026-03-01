@@ -2,20 +2,23 @@ import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { Prisma } from '@prisma/client';
 
-import type { Project, ProjectStatus } from '@prisma/client';
+import type { Project, ProjectStatus, ClientType } from '@prisma/client';
 
 export interface CreateProjectDto {
   name: string;
   code: string;
   organizationId: string;
+  supervisorId: string;
+  createdBy: string;
   status: ProjectStatus;
-  clientName?: string;
-  address?: string;
+  clientName: string;
+  clientType: ClientType;
+  constructionType: string;
+  location?: string;
   latitude?: number;
   longitude?: number;
-  startDate?: Date;
-  endDate?: Date;
-  description?: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface UpdateProjectDto {
@@ -23,12 +26,11 @@ export interface UpdateProjectDto {
   code?: string;
   status?: ProjectStatus;
   clientName?: string;
-  address?: string;
+  location?: string;
   latitude?: number;
   longitude?: number;
   startDate?: Date;
   endDate?: Date;
-  description?: string;
 }
 
 export interface ProjectSearchDto {
@@ -56,16 +58,19 @@ export class ProjectsService {
         name: dto.name,
         code: dto.code,
         organizationId: dto.organizationId,
+        supervisorId: dto.supervisorId,
+        createdBy: dto.createdBy,
         status: dto.status,
         clientName: dto.clientName,
-        address: dto.address,
+        clientType: dto.clientType,
+        constructionType: dto.constructionType,
+        location: dto.location,
         locationPoint:
           dto.latitude && dto.longitude
-            ? Prisma.sql`ST_SetSRID(ST_MakePoint(${dto.longitude}, ${dto.latitude}), 4326)::geography`
+            ? `SRID=4326;POINT(${dto.longitude} ${dto.latitude})`
             : null,
         startDate: dto.startDate,
         endDate: dto.endDate,
-        description: dto.description,
       },
       include: {
         organization: true,
@@ -175,14 +180,13 @@ export class ProjectsService {
         code: dto.code,
         status: dto.status,
         clientName: dto.clientName,
-        address: dto.address,
+        location: dto.location,
         locationPoint:
           dto.latitude !== undefined && dto.longitude !== undefined
-            ? Prisma.sql`ST_SetSRID(ST_MakePoint(${dto.longitude}, ${dto.latitude}), 4326)::geography`
+            ? `SRID=4326;POINT(${dto.longitude} ${dto.latitude})`
             : undefined,
         startDate: dto.startDate,
         endDate: dto.endDate,
-        description: dto.description,
       },
       include: {
         organization: true,
@@ -218,9 +222,9 @@ export class ProjectsService {
 
     const stats = await this.prisma.photo.aggregate({
       where: { projectId },
-      _count: true,
+      _count: { _all: true },
       _sum: {
-        fileSizeBytes: true,
+        fileSize: true,
       },
     });
 
@@ -229,9 +233,9 @@ export class ProjectsService {
     });
 
     return {
-      totalPhotos: stats._count,
+      totalPhotos: stats._count._all,
       totalFolders: folders,
-      storageBytes: stats._sum.fileSizeBytes ?? 0,
+      storageBytes: Number(stats._sum?.fileSize ?? 0),
     };
   }
 }

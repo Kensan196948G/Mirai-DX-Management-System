@@ -82,7 +82,6 @@ export class PhotosController {
     @Query('takenAt') takenAt?: string,
     @Query('exifData') exifData?: string,
     @Query('tags') tags?: string,
-    @Query('description') description?: string,
   ): Promise<Photo> {
     if (!file) {
       throw new BadRequestException('No file provided');
@@ -102,13 +101,12 @@ export class PhotosController {
       uploadedBy: user.userId,
       fileName: file.originalname,
       mimeType: file.mimetype,
-      fileSizeBytes: file.size,
+      fileSize: file.size,
       latitude: latitude ? parseFloat(latitude) : undefined,
       longitude: longitude ? parseFloat(longitude) : undefined,
       takenAt: takenAt ? new Date(takenAt) : undefined,
       exifData: exifData ? JSON.parse(exifData) : undefined,
       tags: tags ? JSON.parse(tags) : undefined,
-      description,
     };
 
     return this.photosService.upload(dto, file.buffer);

@@ -113,8 +113,6 @@ jobs:
     name: Build Backend
     runs-on: ubuntu-latest
     needs: [lint-and-format, test-backend]
-    # Frontend src 未作成のため一時的に無効化
-    if: false
 
     steps:
       - name: Checkout code
@@ -124,13 +122,33 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/backend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Install backend dependencies
+        working-directory: apps/backend
+        run: npm ci
+
+      - name: Validate Prisma schema
+        working-directory: apps/backend
+        run: npx prisma validate
+        env:
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+
       - name: Build backend
-        run: npm run build:backend
+        working-directory: apps/backend
+        run: npm run build
 
       - name: Upload backend build artifacts
         uses: actions/upload-artifact@v6
@@ -143,7 +161,7 @@ jobs:
     name: Build Frontend
     runs-on: ubuntu-latest
     needs: [lint-and-format, test-frontend]
-    # Frontend src 未作成のため一時的に無効化
+    # フロントエンドが実装済みになってから有効化する
     if: false
 
     steps:

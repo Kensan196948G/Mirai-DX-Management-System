@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { PERMISSIONS_KEY } from '../decorators/permissions.decorator';
 import type { AuthenticatedUser } from '../../modules/auth/interfaces/authenticated-user.interface';
-import type { UserRole } from '@prisma/client';
+import type { RoleName } from '@prisma/client';
 
 /**
  * Role-Based Access Control (RBAC) Guard
@@ -18,7 +18,7 @@ export class RbacGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     // Get required roles and permissions from decorators
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
+    const requiredRoles = this.reflector.getAllAndOverride<RoleName[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
