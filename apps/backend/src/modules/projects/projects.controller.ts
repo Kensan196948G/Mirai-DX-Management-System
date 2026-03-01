@@ -40,7 +40,7 @@ export class ProjectsController {
    * Create a new project
    */
   @Post()
-  @Roles('system_admin', 'branch_admin', 'supervisor')
+  @Roles('SYSTEM_ADMIN', 'BRANCH_ADMIN', 'SUPERVISOR')
   @Permissions('write:projects')
   @ApiOperation({ summary: 'Create a new project' })
   @ApiResponse({ status: 201, description: 'Project created successfully' })
@@ -97,7 +97,7 @@ export class ProjectsController {
    * Update project
    */
   @Patch(':id')
-  @Roles('system_admin', 'branch_admin', 'supervisor')
+  @Roles('SYSTEM_ADMIN', 'BRANCH_ADMIN', 'SUPERVISOR')
   @Permissions('write:projects')
   @ApiOperation({ summary: 'Update project' })
   @ApiParam({ name: 'id', description: 'Project ID' })
@@ -112,7 +112,7 @@ export class ProjectsController {
    * Delete project
    */
   @Delete(':id')
-  @Roles('system_admin', 'branch_admin')
+  @Roles('SYSTEM_ADMIN', 'BRANCH_ADMIN')
   @Permissions('delete:projects')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete project' })

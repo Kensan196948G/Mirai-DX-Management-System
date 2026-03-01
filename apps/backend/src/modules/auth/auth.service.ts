@@ -1,10 +1,9 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../database/prisma.service';
+import { Prisma } from '@prisma/client';
 
 import type { AuthenticatedUser } from './interfaces/authenticated-user.interface';
-import type { User, UserRole as PrismaUserRole } from '@prisma/client';
+import type { User, Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -12,8 +11,6 @@ export class AuthService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -26,12 +23,12 @@ export class AuthService {
   async getOrCreateUser(
     auth0UserId: string,
     email: string,
-  ): Promise<User & { roles: Array<{ role: PrismaUserRole['role'] }> }> {
+  ): Promise<User & { roles: Array<{ role: Role }> }> {
     // Try to find existing user
     const user = await this.prisma.user.findUnique({
       where: { auth0UserId },
       include: {
-        roles: true,
+        roles: { include: { role: true } },
       },
     });
 
@@ -61,7 +58,7 @@ export class AuthService {
       ...authenticatedUser,
       userId: user.id,
       organizationId: user.organizationId ?? undefined,
-      roles: user.roles.map((role) => role.role as string),
+      roles: user.roles.map((ur) => ur.role.name as string),
     };
   }
 
@@ -76,7 +73,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
-        roles: true,
+        roles: { include: { role: true } },
       },
     });
 
@@ -101,7 +98,7 @@ export class AuthService {
       viewer: ['read:photos', 'read:projects'],
     };
 
-    const userPermissions = user.roles.flatMap((role) => rolePermissionsMap[role.role] ?? []);
+    const userPermissions = user.roles.flatMap((ur) => rolePermissionsMap[ur.role.name] ?? []);
 
     // System admin has all permissions
     if (userPermissions.includes('*')) {
@@ -134,7 +131,7 @@ export class AuthService {
         action,
         entityType,
         entityId,
-        metadata: metadata ?? {},
+        changes: metadata !== undefined ? (metadata as Prisma.InputJsonValue) : undefined,
         ipAddress: null,
         userAgent: null,
       },

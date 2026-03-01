@@ -9,7 +9,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Prisma } from '@prisma/client';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import { randomBytes } from 'crypto';
 
 import type { Photo } from '@prisma/client';
@@ -20,13 +20,12 @@ export interface UploadPhotoDto {
   uploadedBy: string;
   fileName: string;
   mimeType: string;
-  fileSizeBytes: number;
+  fileSize: number;
   latitude?: number;
   longitude?: number;
   takenAt?: Date;
   exifData?: Record<string, unknown>;
   tags?: string[];
-  description?: string;
 }
 
 export interface PhotoSearchDto {
@@ -123,21 +122,20 @@ export class PhotosService {
           uploadedBy: dto.uploadedBy,
           fileName: dto.fileName,
           mimeType: dto.mimeType,
-          fileSizeBytes: dto.fileSizeBytes,
+          fileSize: dto.fileSize,
           locationPoint:
             dto.latitude && dto.longitude
-              ? Prisma.sql`ST_SetSRID(ST_MakePoint(${dto.longitude}, ${dto.latitude}), 4326)::geography`
+              ? `SRID=4326;POINT(${dto.longitude} ${dto.latitude})`
               : null,
           takenAt: dto.takenAt ?? new Date(),
-          exifData: dto.exifData ?? Prisma.JsonNull,
-          description: dto.description,
+          exifData: dto.exifData !== undefined ? (dto.exifData as Prisma.InputJsonValue) : Prisma.DbNull,
           tags: dto.tags
             ? {
                 create: dto.tags.map((tagName) => ({
                   tag: {
                     connectOrCreate: {
-                      where: { name: tagName },
-                      create: { name: tagName },
+                      where: { projectId_name: { projectId: dto.projectId, name: tagName } },
+                      create: { name: tagName, project: { connect: { id: dto.projectId } } },
                     },
                   },
                 })),
@@ -235,10 +233,7 @@ export class PhotosService {
     }
 
     if (search.query) {
-      where.OR = [
-        { fileName: { contains: search.query, mode: 'insensitive' } },
-        { description: { contains: search.query, mode: 'insensitive' } },
-      ];
+      where.OR = [{ fileName: { contains: search.query, mode: 'insensitive' } }];
     }
 
     // If location search is provided, use raw SQL for PostGIS distance query

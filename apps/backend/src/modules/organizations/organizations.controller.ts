@@ -40,7 +40,7 @@ export class OrganizationsController {
    * Create a new organization (admin only)
    */
   @Post()
-  @Roles('system_admin')
+  @Roles('SYSTEM_ADMIN')
   @Permissions('write:organizations')
   @ApiOperation({ summary: 'Create a new organization' })
   @ApiResponse({ status: 201, description: 'Organization created successfully' })
@@ -91,7 +91,7 @@ export class OrganizationsController {
    * Update organization
    */
   @Patch(':id')
-  @Roles('system_admin')
+  @Roles('SYSTEM_ADMIN')
   @Permissions('write:organizations')
   @ApiOperation({ summary: 'Update organization' })
   @ApiParam({ name: 'id', description: 'Organization ID' })
@@ -106,7 +106,7 @@ export class OrganizationsController {
    * Deactivate organization (soft delete)
    */
   @Delete(':id')
-  @Roles('system_admin')
+  @Roles('SYSTEM_ADMIN')
   @Permissions('write:organizations')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Deactivate organization (soft delete)' })

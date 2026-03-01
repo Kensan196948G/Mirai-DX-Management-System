@@ -1,22 +1,22 @@
 import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 
-import type { User, UserRole as UserRoleType } from '@prisma/client';
+import type { User } from '@prisma/client';
+import type { RoleName } from '@prisma/client';
 
 export interface CreateUserDto {
   auth0UserId: string;
   email: string;
-  displayName: string;
+  name: string;
   organizationId: string;
-  roles: UserRoleType[];
-  phoneNumber?: string;
+  roles: RoleName[];
+  employeeCode?: string;
 }
 
 export interface UpdateUserDto {
-  displayName?: string;
-  phoneNumber?: string;
+  name?: string;
   isActive?: boolean;
-  roles?: UserRoleType[];
+  roles?: RoleName[];
 }
 
 @Injectable()
@@ -43,13 +43,13 @@ export class UsersService {
       data: {
         auth0UserId: dto.auth0UserId,
         email: dto.email,
-        displayName: dto.displayName,
-        phoneNumber: dto.phoneNumber,
+        name: dto.name,
+        employeeCode: dto.employeeCode,
         organizationId: dto.organizationId,
         isActive: true,
         roles: {
-          create: dto.roles.map((role) => ({
-            role,
+          create: dto.roles.map((roleName) => ({
+            role: { connect: { name: roleName } },
           })),
         },
       },
@@ -122,8 +122,7 @@ export class UsersService {
     await this.prisma.user.update({
       where: { id },
       data: {
-        displayName: dto.displayName ?? user.displayName,
-        phoneNumber: dto.phoneNumber ?? user.phoneNumber,
+        name: dto.name ?? user.name,
         isActive: dto.isActive ?? user.isActive,
       },
       include: {
@@ -140,11 +139,11 @@ export class UsersService {
       });
 
       // Create new roles
+      const roleRecords = await this.prisma.role.findMany({
+        where: { name: { in: dto.roles } },
+      });
       await this.prisma.userRole.createMany({
-        data: dto.roles.map((role) => ({
-          userId: id,
-          role,
-        })),
+        data: roleRecords.map((r) => ({ userId: id, roleId: r.id })),
       });
     }
 

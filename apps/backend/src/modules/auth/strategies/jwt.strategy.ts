@@ -9,7 +9,7 @@ import type { AuthenticatedUser } from '../interfaces/authenticated-user.interfa
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(configService: ConfigService) {
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,

@@ -9,14 +9,15 @@ export interface CreateOrganizationDto {
   parentId?: string;
   code?: string;
   address?: string;
-  phoneNumber?: string;
+  tel?: string;
+  isActive?: boolean;
 }
 
 export interface UpdateOrganizationDto {
   name?: string;
   code?: string;
   address?: string;
-  phoneNumber?: string;
+  tel?: string;
   isActive?: boolean;
 }
 
@@ -51,9 +52,9 @@ export class OrganizationsService {
         name: dto.name,
         type: dto.type,
         parentId: dto.parentId,
-        code: dto.code,
+        code: dto.code ?? `ORG-${Date.now()}`,
         address: dto.address,
-        phoneNumber: dto.phoneNumber,
+        tel: dto.tel,
         isActive: true,
       },
       include: {

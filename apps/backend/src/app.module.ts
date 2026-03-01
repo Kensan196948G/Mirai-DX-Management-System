@@ -51,24 +51,12 @@ import { awsConfig } from './config/aws.config';
             format: winston.format.combine(
               winston.format.colorize(),
               winston.format.printf(
-                ({
-                  timestamp,
-                  level,
-                  message,
-                  context,
-                  trace,
-                }: {
-                  timestamp?: string;
-                  level?: string;
-                  message?: string;
-                  context?: string;
-                  trace?: string;
-                }) => {
-                  const ts = timestamp ?? '';
-                  const ctx = context ?? 'App';
-                  const lvl = level ?? '';
-                  const msg = message ?? '';
-                  const traceStr = trace ? `\n${trace}` : '';
+                (info) => {
+                  const ts = (info['timestamp'] as string) ?? '';
+                  const ctx = (info['context'] as string) ?? 'App';
+                  const lvl = info.level ?? '';
+                  const msg = (info.message as string) ?? '';
+                  const traceStr = info['trace'] ? `\n${String(info['trace'])}` : '';
                   return `${ts} [${ctx}] ${lvl}: ${msg}${traceStr}`;
                 },
               ),
